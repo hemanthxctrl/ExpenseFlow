@@ -1,239 +1,355 @@
 # 💎 ExpenseFlow – Personal Finance Manager
 
-> A modern, responsive, frontend-only personal finance dashboard built with **React 18**, **Vite**, **Tailwind CSS**, **Recharts**, and **localStorage** persistence. 
-> Designed as an individual college project adhering to zero-backend constraints while delivering enterprise SaaS UI/UX quality.
+<p align="center">
+  <img src="./screenshots/01-dashboard.svg" alt="ExpenseFlow Dashboard Preview" width="100%" />
+</p>
+
+<p align="center">
+  <strong>A modern, high-performance, frontend-only personal finance dashboard and budgeting system.</strong><br>
+  Built with <strong>React 18</strong>, <strong>Vite</strong>, <strong>Tailwind CSS</strong>, <strong>Recharts</strong>, and <strong>HTML5 LocalStorage</strong>.
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/React-18.3.1-61DAFB?logo=react&logoColor=black&style=flat-square" alt="React 18" />
+  <img src="https://img.shields.io/badge/Vite-5.4.6-646CFF?logo=vite&logoColor=white&style=flat-square" alt="Vite" />
+  <img src="https://img.shields.io/badge/Tailwind_CSS-3.4.11-38B2AC?logo=tailwind-css&logoColor=white&style=flat-square" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/Recharts-2.12.7-22C55E?logo=chartdotjs&logoColor=white&style=flat-square" alt="Recharts" />
+  <img src="https://img.shields.io/badge/Storage-localStorage-F59E0B?style=flat-square" alt="LocalStorage" />
+  <img src="https://img.shields.io/badge/Backend-Zero%20Backend%20(Frontend%20Only)-8B5CF6?style=flat-square" alt="Zero Backend" />
+  <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="License" />
+</p>
 
 ---
 
-## 📸 Visual Showcase & Screenshots
+## 📑 Table of Contents
 
-| Desktop Dashboard (Deep Navy Dark SaaS) | Transactions Ledger & Instant Filters |
-|:---:|:---:|
-| Total balance, 6M cashflow area chart, category donut, budget health | Multi-criteria filters, search, sorting, pagination, CSV export |
-
-| Monthly Category Budgets & Warnings | Analytics & Performance Reports |
-|:---:|:---:|
-| 80% cautionary warnings, exceeded badges, progress meters | Side-by-side bar comparisons, category share, payment channels |
-
-*Detailed screenshot walkthroughs and asset specifications are documented in the [`screenshots/`](./screenshots/README.md) directory.*
-
----
-
-## 🎯 Project Objective & Requirements
-
-- **Client-Side Only**: 100% frontend implementation. No backend, APIs, MongoDB, Firebase, or Express required.
-- **Persistent Data**: All transactions, budgets, settings, and profile data automatically persist in browser `localStorage`.
-- **Realistic Sample Data**: Pre-seeded with 20 realistic Indian transactions (Swiggy, Infosys salary, Amazon, Cult.fit, Zerodha SIP, BESCOM electricity, etc.) seeded **only when no data exists** without ever overwriting user modifications.
-- **Cross-Platform Compatibility**: Single unified codebase automatically adapting to Desktop, Tablet, and Mobile devices (Android/iOS) with desktop sidebar, mobile header, thumb-friendly bottom navigation bar, touch-friendly tap targets, and no horizontal scroll.
-- **Fully Interactive**: Every button, modal, filter, calculation, and chart responds live without static mockups.
+- [1. Executive Summary](#1-executive-summary)
+- [2. Project Objectives & Constraints](#2-project-objectives--constraints)
+- [3. Complete Feature Guide by Module](#3-complete-feature-guide-by-module)
+  - [3.1 Dashboard (`/`)](#31-dashboard-)
+  - [3.2 Transactions Ledger (`/transactions`)](#32-transactions-ledger-transactions)
+  - [3.3 Category Budgets (`/budgets`)](#33-category-budgets-budgets)
+  - [3.4 Analytics & Reports (`/analytics`)](#34-analytics--reports-analytics)
+  - [3.5 Settings & Data Hub (`/settings`)](#35-settings--data-hub-settings)
+- [4. Visual Showcase & Screenshots](#4-visual-showcase--screenshots)
+- [5. Technical Architecture & Data Flow](#5-technical-architecture--data-flow)
+- [6. Directory & Code Organization](#6-directory--code-organization)
+- [7. Financial Calculation Engine & Standards](#7-financial-calculation-engine--standards)
+- [8. UI/UX Design System](#8-uiux-design-system)
+- [9. Responsive & Mobile Compatibility](#9-responsive--mobile-compatibility)
+- [10. Setup & Execution Instructions](#10-setup--execution-instructions)
+- [11. Submission Credentials](#11-submission-credentials)
 
 ---
 
-## 🛠️ Technology Stack
+## 1. Executive Summary
 
-| Layer | Technology | Description |
-|---|---|---|
-| **Core Framework** | React 18.3.1 | Functional components, custom hooks, and React Context architecture |
-| **Bundler & Tooling** | Vite 5.4.6 | Lightning-fast HMR and optimized production Rollup chunks |
-| **Styling & Design** | Tailwind CSS 3.4.11 | Deep navy theme (`#0B0F19`), violet accents, custom glow shadows |
-| **Routing** | React Router DOM 6.26.2 | Single-page client-side routing (`/`, `/transactions`, `/budgets`, etc.) |
-| **Data Visualization** | Recharts 2.12.7 | Interactive Area charts, side-by-side Bar charts, and Donut charts |
-| **Iconography** | Lucide React | Semantic, consistent icons for categories, actions, and states |
-| **Data Persistence** | HTML5 `localStorage` | Client-side persistent ledger with JSON import/export capabilities |
+**ExpenseFlow** is an enterprise-grade, single-page application (SPA) designed to empower individuals with real-time financial tracking, budget discipline, and spending analytics. 
+
+Adhering strictly to a **zero-backend, client-side only** architecture, the application requires no server setup, database configuration, or internet connectivity once loaded. It persists financial data entirely within the browser's `localStorage` engine while offering full CRUD transactions, automated multi-currency formatting, predictive caution alerts, dynamic charts, and CSV/JSON data portability.
 
 ---
 
-## ✨ Features by Page
+## 2. Project Objectives & Constraints
 
-### 1. 📊 Dashboard (`/`)
-- **Key Financial Metrics**: Live cards for **Total Balance**, **Monthly Income**, **Monthly Expenses**, and **Monthly Savings** (with savings rate % and month-over-month growth indicators).
-- **Interactive Cashflow Trend**: 6-month Area chart comparing income vs expenses with custom dark tooltips and metric toggles.
-- **Top Spending Donut Chart**: Visual distribution of current month's expenses across categories with interactive color legends.
-- **Budget Health Glance**: Instant progress bar indicator alerting if any category has exceeded or is nearing its spending threshold.
-- **Recent Transactions Ledger**: 5 most recent transactions with quick-action links.
-- **Quick Action Triggers**: "+ New Transaction" and "Export CSV" buttons.
-
-### 2. 📝 Transactions (`/transactions`)
-- **Full CRUD Support**: Add new transactions, edit existing entries, and delete with safety confirmation dialogs.
-- **Form Validation**: Strict validation preventing negative amounts, empty titles, or invalid dates.
-- **Comprehensive Fields**: Title, Amount, Type (Income vs Expense), Category, Date, Payment Method (UPI, Credit Card, Debit Card, Net Banking, Cash, Bank Transfer), and optional Notes.
-- **Instant Search**: Live search across title, notes, vendor, or category name.
-- **Multi-Faceted Filtering**: Filter by Type (All / Income / Expense), Category, Payment Method, and Timeframe (This Month, Last Month, Last 3M, Last 6M, This Year, All Time).
-- **Sort Controls**: Newest first, Oldest first, Highest amount, Lowest amount, Title (A-Z).
-- **Pagination & Summary Bar**: Smooth 10-per-page pagination and filtered summary pill showing Total In, Total Out, and Net Balance for the current filter set.
-- **Transaction Receipt Modal**: View comprehensive details of any transaction in an elegant modal card.
-
-### 3. 🎯 Budgets (`/budgets`)
-- **Monthly Category Spending Caps**: Set limits for Food, Shopping, Transportation, Healthcare, Bills, Entertainment, etc.
-- **Utilization Progress Bars**: Visual progress indicators styled dynamically based on consumption:
-  - `< 80%`: Healthy (Violet/Emerald progress bar)
-  - `80% – 99%`: **Warning state** with cautionary badge and amber indicator
-  - `≥ 100%`: **Exceeded state** with alert badge and red glow
-- **Safe-to-Spend Metric**: Displays remaining balance available across all budgeted categories.
-- **Budget Management**: Add new category budgets, adjust existing limits, and remove budgets.
-
-### 4. 📈 Analytics (`/analytics`)
-- **Timeframe Selector**: Dynamically filter analytics between This Month, Last 3 Months, Last 6 Months, This Year, and All Time.
-- **Monthly Income vs Expense Bar Chart**: Side-by-side comparison illustrating financial trends over the past 6 months.
-- **Category Donut Chart**: Proportional breakdown of expenses with exact percentage share.
-- **Cashflow Trajectory Area Chart**: Inflow and outflow trends over time.
-- **Payment Method Distribution**: Visual distribution of spending across UPI, Credit Card, Net Banking, and Cash.
-- **Category Summary Table**: Tabular breakdown featuring category icon, transaction count, total spent, and graphical percentage share bar.
-
-### 5. ⚙️ Settings & Data Management (`/settings`)
-- **User Profile**: Customize display name, email, and occupation with automatic avatar generation saved to local storage.
-- **Base Currency Selector**: Default **INR (₹)** with support for USD ($), EUR (€), GBP (£), CAD (CA$), AUD (AU$), JPY (¥), and AED.
-- **Theme Toggle**: One-click switch between **Deep Navy Dark SaaS** (default) and **Clean Light** themes with immediate DOM sync.
-- **Export to CSV**: Download full transaction history as a clean CSV spreadsheet with sanitized columns.
-- **Offline Backup & Restore**: Download complete data state as `.json` and restore backups seamlessly via file picker.
-- **Reset Sample Data**: Re-seeds the 20 realistic Indian transactions and default budgets (with confirmation dialog).
-- **Wipe Local Database**: Two-step danger confirmation to completely purge localStorage records for a fresh slate.
+| Parameter | Specification | Compliance Status |
+|---|---|:---:|
+| **Architecture** | 100% Frontend Only (No Express, MongoDB, Firebase, or external REST APIs) | ✅ Verified |
+| **Persistence Engine** | HTML5 `localStorage` with non-destructive initial lazy-seeding | ✅ Verified |
+| **Framework & Tooling** | React 18.3.1, Vite 5.4.6, React Router DOM 6.26.2 | ✅ Verified |
+| **Data Visualization** | Interactive SVG Area, Bar, and Donut charts via Recharts | ✅ Verified |
+| **Responsive Target** | Unified responsive codebase for Desktop, Tablet, and Mobile browsers | ✅ Verified |
+| **Default Currency** | Indian Rupee (INR `₹`) with multi-currency selector support | ✅ Verified |
+| **Default Aesthetic** | Deep Navy SaaS theme (`#0B0F19`) with violet accents | ✅ Verified |
 
 ---
 
-## 📂 Project Structure
+## 3. Complete Feature Guide by Module
+
+```
+                          ┌─────────────────────────────────────┐
+                          │    ExpenseFlow Application Shell    │
+                          └──────────────────┬──────────────────┘
+                                             │
+      ┌──────────────────┬───────────────────┼───────────────────┬──────────────────┐
+      ▼                  ▼                   ▼                   ▼                  ▼
+┌───────────┐    ┌──────────────┐     ┌─────────────┐     ┌─────────────┐    ┌─────────────┐
+│ Dashboard │    │ Transactions │     │   Budgets   │     │  Analytics  │    │  Settings   │
+│ Overview  │    │    Ledger    │     │  & Targets  │     │  & Reports  │    │  & Backups  │
+└───────────┘    └──────────────┘     └─────────────┘     └─────────────┘    └─────────────┘
+```
+
+### 3.1 Dashboard (`/`)
+- **Executive Metric Cards**:
+  - **Total Balance**: Real-time net wealth calculated as `Total Income - Total Expenses`.
+  - **Monthly Income**: Income deposited within the active calendar month with month-over-month trend.
+  - **Monthly Expenses**: Expenditure consumed within the active calendar month with inverted sentiment (spending drops show green; spending increases show red).
+  - **Monthly Savings & Savings Rate**: Net retained surplus and calculated savings rate percentage `(Savings / Income) * 100`.
+- **Cashflow Trend Chart**: 6-month interactive Area Chart illustrating historical cash inflows vs outflows with custom dark tooltips.
+- **Top Spending Donut Chart**: Proportional breakdown of category expenditures for the current month.
+- **Budget Health Widget**: Progress meter tracking aggregate budget consumption with one-click navigation to budget management.
+- **Recent Transactions Feed**: Displays the 5 most recent transactions with quick-action links.
+- **Quick Action Bar**: One-click triggers for **New Transaction** modal and **Export CSV**.
+
+### 3.2 Transactions Ledger (`/transactions`)
+- **Full CRUD Engine**: Add new transactions, edit existing transactions, and delete entries with safety confirmation dialogs.
+- **Form Validation**: Strict client-side verification preventing negative or zero amounts, empty titles, and missing dates.
+- **Data Attributes**: Title, Amount, Transaction Type (Income vs Expense), Category, Date, Payment Method (UPI, Credit Card, Debit Card, Net Banking, Cash, Bank Transfer), and Notes.
+- **Instant Search**: Real-time filtering across titles, notes, categories, and payment channels.
+- **Multi-Faceted Filters**:
+  - Filter by Type: `All`, `Expenses`, `Income`
+  - Filter by Category: 11 supported financial categories
+  - Filter by Payment Method: UPI, Credit Card, Debit Card, Net Banking, Cash, Bank Transfer
+  - Filter by Timeframe: `This Month`, `Last Month`, `Last 3 Months`, `Last 6 Months`, `This Year`, `All Time`
+- **Sort Controls**: Newest date, Oldest date, Highest amount, Lowest amount, Title (A–Z).
+- **Filtered Summary Ribbon**: Live summary badge reporting filtered transaction count, total inflows, total outflows, and net delta.
+- **Pagination**: Clean 10-item page splitting with accessible previous/next navigation.
+- **Receipt Details Modal**: Complete metadata view for any selected transaction.
+
+### 3.3 Category Budgets (`/budgets`)
+- **Category Spending Caps**: Set and edit monthly financial limits across categories.
+- **Smart Caution Alert System**:
+  - **Normal Status (`< 80%`)**: Violet/Emerald progress bar indicating safe spending.
+  - **Warning Status (`80% – 99%`)**: Amber cautionary badge alerting the user that the budget limit is near.
+  - **Exceeded Status (`≥ 100%`)**: Red pulse badge and banner highlighting budget overruns.
+- **Budget Health Overview**:
+  - Total Budget Allocated
+  - Total Consumed
+  - Safe-to-Spend Balance
+  - Aggregate Percentage Meter
+
+### 3.4 Analytics & Reports (`/analytics`)
+- **Timeframe Selector**: Toggle metrics between `This Month`, `Last 3 Months`, `Last 6 Months`, `This Year`, and `All Time`.
+- **Side-by-Side Monthly Bar Chart**: Direct monthly comparison of inflows vs outflows over the past 6 months.
+- **Category Share Donut Chart**: High-contrast proportional donut chart with custom legends.
+- **Cashflow Trajectory Chart**: Area trend showing cumulative cash movement.
+- **Payment Channel Distribution**: Spending volume categorized by UPI, Credit Card, Debit Card, Net Banking, and Cash.
+- **Detailed Category Breakdown Table**: Tabular breakdown showing category icon, transaction count, total expenditure, and visual share progress bars.
+
+### 3.5 Settings & Data Hub (`/settings`)
+- **Profile Customization**: Edit display name, email, and occupation with automatic avatar generation saved to `localStorage`.
+- **Base Currency Selector**: Default **INR (`₹`)** with support for USD (`$`), EUR (`€`), GBP (`£`), CAD (`CA$`), AUD (`AU$`), JPY (`¥`), and AED (`AED`).
+- **Theme Switcher**: Immediate one-click toggle between **Deep Navy Dark SaaS** (default) and **Clean Light** modes.
+- **CSV Data Export**: Instant generation and download of `expenseflow_transactions.csv`.
+- **JSON Backup & Restore**: Download complete state backups as `.json` and restore backups via client-side file picker.
+- **Reset Sample Data**: Re-seeds the 20 realistic Indian transactions and default budgets with confirmation modal.
+- **Wipe Local Database**: Two-step danger confirmation to completely clear `localStorage`.
+
+---
+
+## 4. Visual Showcase & Screenshots
+
+High-fidelity vector previews are located in the [`screenshots/`](./screenshots/) directory:
+
+| Screen | Description | Vector Asset |
+|---|---|:---:|
+| **01. Main Dashboard** | Executive KPI cards, cashflow trend area chart, top spending donut, recent transactions, and budget alert. | [View SVG](./screenshots/01-dashboard.svg) |
+| **02. Transactions Ledger** | Multi-faceted filter toolbar, search bar, summary ribbon, and responsive transaction table. | [View SVG](./screenshots/02-transactions.svg) |
+
+---
+
+## 5. Technical Architecture & Data Flow
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                        React Application Root                          │
+│                               (App.jsx)                                │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │ Wraps Context Providers
+┌───────────────────────────────────▼────────────────────────────────────┐
+│      ThemeProvider  ─►  CurrencyProvider  ─►  ToastProvider           │
+│                                  │                                     │
+│                     FinanceProvider (Core State)                       │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │ Exposes State & Actions
+      ┌─────────────────────────────┼─────────────────────────────┐
+      ▼                             ▼                             ▼
+┌──────────────┐             ┌──────────────┐             ┌──────────────┐
+│  Dashboard   │             │ Transactions │             │   Budgets    │
+│  Analytics   │             │   Filters    │             │   Warnings   │
+└──────┬───────┘             └──────┬───────┘             └──────┬───────┘
+       │                            │                            │
+       └────────────────────────────┼────────────────────────────┘
+                                    ▼ Dispatches Updates
+┌────────────────────────────────────────────────────────────────────────┐
+│                  Financial Calculation Engine                          │
+│                    (src/utils/calculations.js)                         │
+└───────────────────────────────────┬────────────────────────────────────┘
+                                    │ Synchronizes
+┌───────────────────────────────────▼────────────────────────────────────┐
+│                     HTML5 LocalStorage Database                        │
+│   (expenseflow_transactions, expenseflow_budgets, expenseflow_profile) │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 6. Directory & Code Organization
 
 ```
 ExpenseFlow/
-├── public/
-├── screenshots/
-│   └── README.md
+├── public/                          # Static assets and icons
+├── screenshots/                     # Vector UI screenshots and visual showcase
+│   ├── 01-dashboard.svg             # Dashboard preview
+│   ├── 02-transactions.svg          # Transactions ledger preview
+│   └── README.md                    # Visual showcase guide
 ├── src/
-│   ├── assets/
+│   ├── assets/                      # Application icons & branding
 │   ├── components/
-│   │   ├── common/
-│   │   │   ├── Badge.jsx            # Reusable status badges (income, expense, warning)
-│   │   │   ├── Button.jsx           # Button variants (primary, secondary, danger, etc.)
-│   │   │   ├── Card.jsx             # Dark SaaS styled container cards with hover effects
-│   │   │   ├── CategoryIcon.jsx     # Semantic category icons with custom palette
-│   │   │   ├── ConfirmDialog.jsx    # Modal dialog for deletions and data resets
-│   │   │   ├── EmptyState.jsx       # Polished fallback states when lists are empty
-│   │   │   ├── Modal.jsx            # Accessible overlay modal with keyboard & backdrop dismissal
-│   │   │   └── StatCard.jsx         # KPI metric cards with trends and ambient glows
-│   │   ├── layout/
-│   │   │   ├── Layout.jsx           # Main app shell with sidebar and responsive outlet
-│   │   │   ├── MobileNav.jsx        # Bottom navigation bar for mobile devices
-│   │   │   ├── Navbar.jsx           # Top header with currency picker, theme toggle & quick-add
-│   │   │   └── Sidebar.jsx          # Desktop sidebar navigation with live balance
-│   │   ├── transactions/
-│   │   │   ├── TransactionDetailsModal.jsx # Detailed receipt modal
-│   │   │   ├── TransactionFilters.jsx      # Search, type, category, date, sort controls
-│   │   │   ├── TransactionFormModal.jsx    # Add/Edit transaction with validation
-│   │   │   ├── TransactionItem.jsx         # Responsive row/card for transactions
-│   │   │   └── TransactionList.jsx         # Paginated transaction list with summary bar
-│   │   ├── budgets/
-│   │   │   ├── BudgetCard.jsx       # Category budget card with 80% warnings & exceeded badges
-│   │   │   ├── BudgetFormModal.jsx  # Set or edit category budget limit
-│   │   │   └── BudgetSummary.jsx    # High-level budget utilization overview
-│   │   └── analytics/
-│   │       ├── CashflowChart.jsx           # Recharts AreaChart with custom gradients
-│   │       ├── CategoryPieChart.jsx        # Recharts Donut chart with legend
-│   │       ├── ExpenseBreakdownTable.jsx   # Tabular category spending analysis
-│   │       └── MonthlyBarChart.jsx         # Recharts BarChart for monthly comparisons
-│   ├── context/
-│   │   ├── CurrencyContext.jsx      # Active currency, symbols, and formatters
-│   │   ├── FinanceContext.jsx       # Core ledger state, calculations, and CRUD logic
-│   │   ├── ThemeContext.jsx         # Dark/Light mode manager syncing with HTML class
-│   │   └── ToastContext.jsx         # Animated toast notification system
-│   ├── data/
-│   │   ├── categories.js            # 11 supported categories with colors and icons
-│   │   ├── currencies.js            # Supported currency configurations (INR default)
-│   │   └── sampleData.js            # 20 realistic Indian transactions and default budgets
-│   ├── pages/
-│   │   ├── Analytics.jsx            # Analytics page with timeframes and charts
-│   │   ├── Budgets.jsx              # Budgets management and alerts page
+│   │   ├── analytics/               # Recharts visualization components
+│   │   │   ├── CashflowChart.jsx           # Inflow vs outflow area chart
+│   │   │   ├── CategoryPieChart.jsx        # Category breakdown donut chart
+│   │   │   ├── ExpenseBreakdownTable.jsx   # Tabular category spending summary
+│   │   │   └── MonthlyBarChart.jsx         # Monthly side-by-side bar chart
+│   │   ├── budgets/                 # Budget management components
+│   │   │   ├── BudgetCard.jsx              # Category budget card with caution states
+│   │   │   ├── BudgetFormModal.jsx         # Modal to set/edit category limits
+│   │   │   └── BudgetSummary.jsx           # Overall budget consumption header
+│   │   ├── common/                  # Reusable UI primitives
+│   │   │   ├── Badge.jsx                   # Status badges (income, expense, warning)
+│   │   │   ├── Button.jsx                  # Standardized button variants
+│   │   │   ├── Card.jsx                    # Glassmorphism container cards
+│   │   │   ├── CategoryIcon.jsx            # Category icon mapping
+│   │   │   ├── ConfirmDialog.jsx           # Two-step confirmation dialog
+│   │   │   ├── EmptyState.jsx              # Fallback UI for empty queries
+│   │   │   ├── Modal.jsx                   # Accessible modal overlay
+│   │   │   └── StatCard.jsx                # Key performance indicator cards
+│   │   ├── layout/                  # Shell components
+│   │   │   ├── Layout.jsx                  # Main shell uniting sidebar, navbar, & outlet
+│   │   │   ├── MobileNav.jsx               # Thumb-friendly mobile bottom navigation
+│   │   │   ├── Navbar.jsx                  # Header with currency & theme switches
+│   │   │   └── Sidebar.jsx                 # Desktop sidebar with live balance
+│   │   └── transactions/            # Ledger components
+│   │       ├── TransactionDetailsModal.jsx # Detailed receipt modal
+│   │       ├── TransactionFilters.jsx      # Search, type, category, and date toolbar
+│   │       ├── TransactionFormModal.jsx    # Add/Edit transaction with validation
+│   │       ├── TransactionItem.jsx         # Adaptive transaction row/card
+│   │       └── TransactionList.jsx         # Paginated transaction listing
+│   ├── context/                     # React Context State Management
+│   │   ├── CurrencyContext.jsx      # Multi-currency provider (INR default)
+│   │   ├── FinanceContext.jsx       # Ledger state, calculations & persistence
+│   │   ├── ThemeContext.jsx         # Dark / Light theme synchronization
+│   │   └── ToastContext.jsx         # Animated toast notification manager
+│   ├── data/                        # Initial datasets & configurations
+│   │   ├── categories.js            # 11 supported financial categories
+│   │   ├── currencies.js            # Currency configurations (INR, USD, EUR, etc.)
+│   │   └── sampleData.js            # 20 realistic Indian seed transactions
+│   ├── pages/                       # Application Views
+│   │   ├── Analytics.jsx            # Analytics & reports page
+│   │   ├── Budgets.jsx              # Monthly category budgets page
 │   │   ├── Dashboard.jsx            # Main dashboard overview
-│   │   ├── NotFound.jsx             # 404 fallback page
-│   │   ├── Settings.jsx             # Settings, profile, CSV export, and data wipe
-│   │   └── Transactions.jsx         # Transactions ledger with filtering and search
-│   ├── utils/
-│   │   ├── calculations.js          # Pure financial calculation and aggregation engine
-│   │   ├── exportCSV.js             # CSV file generator and JSON backup exporter
-│   │   └── formatters.js            # Currency, relative date, and compact number formatters
-│   ├── App.jsx                      # App root with providers and router
-│   ├── index.css                    # Tailwind directives and custom scrollbar styling
-│   └── main.jsx                     # Application DOM entry point
-├── index.html                       # HTML5 template with Inter font and responsive viewport
+│   │   ├── NotFound.jsx             # 404 error fallback page
+│   │   ├── Settings.jsx             # Settings & backup management
+│   │   └── Transactions.jsx         # Transactions ledger & search
+│   ├── utils/                       # Pure Utility Functions
+│   │   ├── calculations.js          # Financial metrics & aggregation engine
+│   │   ├── exportCSV.js             # CSV generator & JSON backup exporter
+│   │   └── formatters.js            # Currency, relative date & compact formatters
+│   ├── App.jsx                      # App root with providers & React Router routes
+│   ├── index.css                    # Tailwind CSS directives & scrollbar styling
+│   └── main.jsx                     # Application DOM mounting entrypoint
+├── .gitignore                       # Standard Git ignore rules
+├── index.html                       # HTML5 template with Inter font
 ├── package.json                     # Project manifest and dependencies
-├── postcss.config.js                # PostCSS configuration
-├── tailwind.config.js               # Tailwind custom theme configuration
-└── vite.config.js                   # Vite configuration with chunk splitting
+├── postcss.config.js                # PostCSS plugins configuration
+├── README.md                        # Documentation
+├── tailwind.config.js               # Tailwind custom color palette & shadows
+└── vite.config.js                   # Vite config with manual chunk splitting
 ```
 
 ---
 
-## 🚀 Setup & Installation Instructions
+## 7. Financial Calculation Engine & Standards
 
-Follow these straightforward steps to run the application locally on your computer:
+The application uses a pure calculation engine in [`src/utils/calculations.js`](./src/utils/calculations.js) that eliminates common JavaScript floating-point and date errors:
 
-### 1. Prerequisites
-- **Node.js** (v18.0 or newer recommended)
-- **npm**, **pnpm**, or **yarn**
+1. **Timezone-Immune Date Evaluation**:
+   Date strings (`YYYY-MM-DD`) are decomposed into local year, month, and day integers rather than parsed via UTC timestamps, ensuring that transactions logged on the 1st of a month are never misassigned to the prior month due to UTC timezone offsets.
+2. **Standard GAAP Growth Formulas**:
+   Percentage change calculations support positive, zero, and negative baseline values:
+   $$\text{Growth \%} = \frac{\text{Current} - \text{Previous}}{|\text{Previous}|} \times 100$$
+   This ensures that transitioning from a negative savings balance (deficit) to a positive savings balance (surplus) correctly reflects positive growth.
+3. **Sentiment-Aware Expense Trends**:
+   For expenditure metrics, trend indicators invert standard growth colors: a decrease in expenses is colored **Emerald Green** (beneficial), while an increase in expenses is colored **Rose Red** (cautionary).
 
-### 2. Install Dependencies
-Open your terminal in the project directory and run:
+---
+
+## 8. UI/UX Design System
+
+| Role | Color Name | Hex Code | Purpose |
+|---|---|---|---|
+| **Background Dark** | Navy 900 | `#0B0F19` | Main application background |
+| **Card Surface** | Navy 850 | `#0F1626` | Elevated cards, sidebars, and dialog surfaces |
+| **Borders** | Navy 750 | `#1E293B` | Subtle card outlines and divider rules |
+| **Brand Accent** | Violet 500 | `#8B5CF6` | Primary buttons, active tabs, and focus rings |
+| **Income Indicator** | Emerald 500 | `#10B981` | Positive cashflow, deposits, and growth arrows |
+| **Expense Indicator** | Rose 500 | `#F43F5E` | Negative cashflow, withdrawals, and over-budget states |
+| **Warning Indicator** | Amber 500 | `#F59E0B` | 80%–99% budget caution indicators |
+
+---
+
+## 9. Responsive & Mobile Compatibility
+
+ExpenseFlow is engineered as **one unified application** that dynamically adjusts layout across screen sizes:
+
+- **Desktop (≥ 1024px)**: Fixed left navigation sidebar (256px), multi-column dashboard grid, full transaction data table.
+- **Tablet (768px – 1023px)**: Two-column metric cards, responsive charts with automatic container reflow.
+- **Mobile (< 768px)**:
+  - Header displays a slide-over drawer toggle.
+  - Sticky bottom navigation bar for single-thumb access to all 5 sections.
+  - Transactions format into touch-friendly cards with tap targets (`min-h-[32px]`).
+  - Charts utilize responsive containers with `min-w-0` to eliminate horizontal scroll.
+
+---
+
+## 10. Setup & Execution Instructions
+
+### Prerequisites
+- **Node.js**: v18.0.0 or higher
+- **npm**: v9.0.0 or higher (or `pnpm` / `yarn`)
+
+### Quick Start
 
 ```bash
+# 1. Clone the repository or navigate to project directory
+cd ExpenseFlow
+
+# 2. Install dependencies
 npm install
-```
 
-### 3. Start Development Server
-Launch the live development server:
-
-```bash
+# 3. Launch development server with Hot Module Replacement (HMR)
 npm run dev
 ```
 
-The application will start immediately at:
+Open your browser and navigate to:
 ```
 http://localhost:5173
 ```
-Open this URL in Google Chrome, Microsoft Edge, Mozilla Firefox, or Apple Safari.
 
-### 4. Build for Production
-To generate an optimized, minified production build:
+### Production Build
 
 ```bash
+# Build optimized, minified production assets
 npm run build
-```
 
-The compiled assets will be output to the `dist/` directory. You can preview the production build locally with:
-
-```bash
+# Preview production build locally
 npm run preview
 ```
 
----
-
-## 📱 Cross-Platform & Device Testing Guide
-
-The application was built from the ground up for seamless operation across desktop monitors, laptops, tablets, and smartphones:
-
-- **Desktop (≥ 1024px)**: Uses the fixed left navigation sidebar with live balance status and comfortable multi-column dashboard grid.
-- **Mobile / Smartphone (< 1024px)**:
-  - Header displays a clean hamburger drawer trigger for full menu access.
-  - Sticky bottom navigation bar enables effortless single-thumb switching between Dashboard, Transactions, Budgets, Analytics, and Settings.
-  - Transactions list transforms from wide desktop tables to touch-friendly mobile cards with clear tap actions.
-  - Recharts automatically resize to viewport width without horizontal scrollbars or overflow clipping.
-  - All modals adapt to mobile screen heights with scrollable inner containers and sticky action footers.
+Production assets are compiled into the `dist/` directory with code-splitting:
+- `dist/assets/vendor-*.js` (React, React-DOM, React Router)
+- `dist/assets/recharts-*.js` (Data visualization bundle)
+- `dist/assets/icons-*.js` (Lucide React iconography)
+- `dist/assets/index-*.js` (Application logic)
+- `dist/assets/index-*.css` (Tailwind CSS stylesheet)
 
 ---
 
-## 🔒 Data Privacy & Architecture Note
-
-- All data is maintained entirely on the client side using the standard browser `window.localStorage` API.
-- No third-party servers, tracking scripts, or analytics beacons are loaded.
-- Refreshing the browser preserves your transactions, budgets, profile changes, and selected theme/currency.
-
----
-
-## 👨‍💻 College Project Submission Details
+## 11. Submission Credentials
 
 - **Project Title**: ExpenseFlow – Personal Finance Manager
-- **Course**: Advanced Web Application Development / Frontend Engineering
-- **Architecture**: Single-Page React Application (Frontend-Only, Zero-Backend)
-- **Primary Currency**: INR (₹)
-- **Sample Dataset**: 20 realistic Indian transaction records covering UPI, Credit Card, Net Banking, and Bank Transfers
-
-#   M F E F - C L A 5  
- 
+- **Course**: Advanced Frontend Web Development / Web Engineering
+- **Architecture**: Single-Page React Application (Zero-Backend, Frontend-Only)
+- **Primary Currency**: Indian Rupee (INR `₹`)
+- **Persistence Engine**: Client-side `localStorage` with automated JSON backup/restore
+- **License**: MIT

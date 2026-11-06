@@ -1,0 +1,176 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" width="100%" height="100%" style="background:#0B0F19; font-family:'Inter', system-ui, sans-serif;">
+  <defs>
+    <linearGradient id="violetGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#6D28D9" />
+    </linearGradient>
+    <linearGradient id="areaIncome" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#10B981" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#10B981" stop-opacity="0.0" />
+    </linearGradient>
+    <linearGradient id="areaExpense" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F43F5E" stop-opacity="0.4" />
+      <stop offset="100%" stop-color="#F43F5E" stop-opacity="0.0" />
+    </linearGradient>
+  </defs>
+
+  <!-- Left Sidebar -->
+  <rect x="0" y="0" width="240" height="750" fill="#0E1424" stroke="#1E293B" stroke-width="1" />
+  
+  <!-- Logo -->
+  <rect x="24" y="24" width="36" height="36" rx="10" fill="url(#violetGrad)" />
+  <path d="M42 32 L42 52 M36 36 L48 48" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" />
+  <text x="70" y="42" fill="#FFFFFF" font-size="16" font-weight="800">ExpenseFlow</text>
+  <text x="70" y="55" fill="#8B5CF6" font-size="10" font-weight="600" letter-spacing="1">PERSONAL FINANCE</text>
+
+  <!-- Total Balance Card in Sidebar -->
+  <rect x="16" y="80" width="208" height="75" rx="12" fill="#131C31" stroke="#1E293B" stroke-width="1" />
+  <text x="28" y="102" fill="#94A3B8" font-size="11">Total Balance</text>
+  <rect x="160" y="90" width="50" height="18" rx="4" fill="#10B981" fill-opacity="0.15" />
+  <text x="172" y="103" fill="#10B981" font-size="10" font-weight="700">● LIVE</text>
+  <text x="28" y="135" fill="#FFFFFF" font-size="20" font-weight="800">₹1,36,792</text>
+
+  <!-- Navigation items -->
+  <rect x="16" y="175" width="208" height="40" rx="10" fill="#8B5CF6" fill-opacity="0.15" stroke="#8B5CF6" stroke-opacity="0.3" stroke-width="1" />
+  <text x="48" y="200" fill="#FFFFFF" font-size="13" font-weight="600">📊 Dashboard</text>
+  <text x="48" y="245" fill="#94A3B8" font-size="13" font-weight="500">📝 Transactions</text>
+  <text x="48" y="290" fill="#94A3B8" font-size="13" font-weight="500">🎯 Budgets</text>
+  <text x="48" y="335" fill="#94A3B8" font-size="13" font-weight="500">📈 Analytics</text>
+  <text x="48" y="380" fill="#94A3B8" font-size="13" font-weight="500">⚙️ Settings</text>
+
+  <!-- User profile footer -->
+  <line x1="0" y1="670" x2="240" y2="670" stroke="#1E293B" stroke-width="1" />
+  <circle cx="44" cy="710" r="18" fill="url(#violetGrad)" />
+  <text x="44" y="716" fill="#FFFFFF" font-size="14" font-weight="700" text-anchor="middle">A</text>
+  <text x="72" y="707" fill="#FFFFFF" font-size="12" font-weight="700">Arjun Sharma</text>
+  <text x="72" y="721" fill="#64748B" font-size="10">Personal Account</text>
+
+  <!-- Top Navigation Bar -->
+  <rect x="240" y="0" width="960" height="70" fill="#0B0F19" stroke="#1E293B" stroke-width="1" />
+  <text x="270" y="42" fill="#FFFFFF" font-size="20" font-weight="800">Financial Dashboard</text>
+
+  <!-- Navbar right controls -->
+  <rect x="940" y="18" width="95" height="34" rx="8" fill="#131C31" stroke="#334155" stroke-width="1" />
+  <text x="955" y="40" fill="#CBD5E1" font-size="12" font-weight="600">INR (₹) ▼</text>
+  
+  <rect x="1050" y="18" width="125" height="34" rx="8" fill="url(#violetGrad)" />
+  <text x="1068" y="40" fill="#FFFFFF" font-size="12" font-weight="700">+ New Entry</text>
+
+  <!-- 4 Stat Cards Row -->
+  <!-- Card 1: Balance -->
+  <rect x="270" y="95" width="205" height="100" rx="14" fill="#0F1626" stroke="#1E293B" stroke-width="1" />
+  <text x="290" y="122" fill="#94A3B8" font-size="12">Total Balance</text>
+  <text x="290" y="152" fill="#FFFFFF" font-size="22" font-weight="800">₹1,36,792</text>
+  <text x="290" y="177" fill="#8B5CF6" font-size="11">Net balance of all accounts</text>
+
+  <!-- Card 2: Income -->
+  <rect x="495" y="95" width="205" height="100" rx="14" fill="#0F1626" stroke="#1E293B" stroke-width="1" />
+  <text x="515" y="122" fill="#94A3B8" font-size="12">Monthly Income</text>
+  <text x="515" y="152" fill="#10B981" font-size="22" font-weight="800">₹1,13,500</text>
+  <text x="515" y="177" fill="#10B981" font-size="11">▲ +3% vs last month</text>
+
+  <!-- Card 3: Expenses -->
+  <rect x="720" y="95" width="205" height="100" rx="14" fill="#0F1626" stroke="#1E293B" stroke-width="1" />
+  <text x="740" y="122" fill="#94A3B8" font-size="12">Monthly Expenses</text>
+  <text x="740" y="152" fill="#F43F5E" font-size="22" font-weight="800">₹36,609</text>
+  <text x="740" y="177" fill="#10B981" font-size="11">▼ -30% vs last month</text>
+
+  <!-- Card 4: Savings -->
+  <rect x="945" y="95" width="225" height="100" rx="14" fill="#0F1626" stroke="#1E293B" stroke-width="1" />
+  <text x="965" y="122" fill="#94A3B8" font-size="12">Monthly Savings</text>
+  <text x="965" y="152" fill="#818CF8" font-size="22" font-weight="800">₹76,891</text>
+  <text x="965" y="177" fill="#10B981" font-size="11">▲ +34% (68% savings rate)</text>
+
+  <!-- Alert Banner -->
+  <rect x="270" y="215" width="900" height="52" rx="12" fill="#F43F5E" fill-opacity="0.1" stroke="#F43F5E" stroke-opacity="0.3" stroke-width="1" />
+  <text x="290" y="245" fill="#F87171" font-size="13" font-weight="700">⚠️ Monthly Budget Alert:</text>
+  <text x="460" y="245" fill="#FECDD3" font-size="13">Healthcare budget exceeded (121%) and Shopping nearing limit (87%).</text>
+  <rect x="1070" y="225" width="85" height="32" rx="8" fill="#F43F5E" />
+  <text x="1083" y="246" fill="#FFFFFF" font-size="11" font-weight="700">Review →</text>
+
+  <!-- Main Chart: Cashflow Trend Area -->
+  <rect x="270" y="285" width="585" height="240" rx="14" fill="#0F1626" stroke="#1E293B" stroke-width="1" />
+  <text x="295" y="315" fill="#FFFFFF" font-size="14" font-weight="700">Cashflow Trend (Last 6 Months)</text>
+  <text x="720" y="315" fill="#10B981" font-size="11">● Income</text>
+  <text x="785" y="315" fill="#F43F5E" font-size="11">● Expense</text>
+
+  <!-- Area Curves Simulation -->
+  <path d="M 310 470 Q 370 430 430 440 T 550 410 T 670 430 T 790 390 L 790 490 L 310 490 Z" fill="url(#areaIncome)" />
+  <path d="M 310 470 Q 370 430 430 440 T 550 410 T 670 430 T 790 390" fill="none" stroke="#10B981" stroke-width="3" />
+  
+  <path d="M 310 480 Q 370 460 430 450 T 550 465 T 670 440 T 790 450 L 790 490 L 310 490 Z" fill="url(#areaExpense)" />
+  <path d="M 310 480 Q 370 460 430 450 T 550 465 T 670 440 T 790 450" fill="none" stroke="#F43F5E" stroke-width="3" />
+  
+  <text x="310" y="508" fill="#64748B" font-size="10">Jun</text>
+  <text x="405" y="508" fill="#64748B" font-size="10">Jul</text>
+  <text x="500" y="508" fill="#64748B" font-size="10">Aug</text>
+  <text x="595" y="508" fill="#64748B" font-size="10">Sep</text>
+  <text x="690" y="508" fill="#64748B" font-size="10">Oct</text>
+  <text x="780" y="508" fill="#8B5CF6" font-size="10" font-weight="700">Nov (Now)</text>
+
+  <!-- Donut Chart Card: Top Spending -->
+  <rect x="875" y="285" width="295" height="240" rx="14" fill="#0F1626" stroke="#1E293B" stroke-width="1" />
+  <text x="895" y="315" fill="#FFFFFF" font-size="14" font-weight="700">Top Spending Share</text>
+
+  <!-- Simulated Donut Circles -->
+  <circle cx="965" cy="410" r="55" fill="none" stroke="#1E293B" stroke-width="18" />
+  <circle cx="965" cy="410" r="55" fill="none" stroke="#EF4444" stroke-width="18" stroke-dasharray="140 345" stroke-dashoffset="0" />
+  <circle cx="965" cy="410" r="55" fill="none" stroke="#EC4899" stroke-width="18" stroke-dasharray="90 345" stroke-dashoffset="-140" />
+  <circle cx="965" cy="410" r="55" fill="none" stroke="#F59E0B" stroke-width="18" stroke-dasharray="70 345" stroke-dashoffset="-230" />
+  <text x="965" y="415" fill="#FFFFFF" font-size="14" font-weight="800" text-anchor="middle">₹36.6K</text>
+
+  <!-- Donut Legends -->
+  <text x="1040" y="380" fill="#EF4444" font-size="11" font-weight="700">■ Healthcare: 40%</text>
+  <text x="1040" y="405" fill="#EC4899" font-size="11" font-weight="700">■ Shopping: 24%</text>
+  <text x="1040" y="430" fill="#F59E0B" font-size="11" font-weight="700">■ Food: 17%</text>
+  <text x="1040" y="455" fill="#3B82F6" font-size="11" font-weight="700">■ Transit: 8%</text>
+
+  <!-- Recent Transactions Table Card -->
+  <rect x="270" y="545" width="585" height="180" rx="14" fill="#0F1626" stroke="#1E293B" stroke-width="1" />
+  <text x="295" y="575" fill="#FFFFFF" font-size="14" font-weight="700">Recent Transactions</text>
+  <text x="770" y="575" fill="#8B5CF6" font-size="12" font-weight="600">View All →</text>
+
+  <!-- Tx 1 -->
+  <circle cx="310" cy="610" r="14" fill="#10B981" fill-opacity="0.15" />
+  <text x="310" y="615" fill="#10B981" font-size="12" text-anchor="middle">💼</text>
+  <text x="335" y="607" fill="#FFFFFF" font-size="12" font-weight="600">Infosys Monthly Tech Salary</text>
+  <text x="335" y="620" fill="#64748B" font-size="10">Salary • Bank Transfer • Today</text>
+  <text x="815" y="615" fill="#10B981" font-size="13" font-weight="800" text-anchor="end">+₹85,000</text>
+
+  <!-- Tx 2 -->
+  <circle cx="310" cy="655" r="14" fill="#F43F5E" fill-opacity="0.15" />
+  <text x="310" y="660" fill="#F43F5E" font-size="12" text-anchor="middle">🏥</text>
+  <text x="335" y="652" fill="#FFFFFF" font-size="12" font-weight="600">Cult.fit Elite Gym Membership</text>
+  <text x="335" y="665" fill="#64748B" font-size="10">Healthcare • Credit Card • 2 days ago</text>
+  <text x="815" y="660" fill="#F43F5E" font-size="13" font-weight="800" text-anchor="end">-₹14,500</text>
+
+  <!-- Tx 3 -->
+  <circle cx="310" cy="700" r="14" fill="#F43F5E" fill-opacity="0.15" />
+  <text x="310" y="705" fill="#F43F5E" font-size="12" text-anchor="middle">🛍️</text>
+  <text x="335" y="697" fill="#FFFFFF" font-size="12" font-weight="600">Amazon Wireless Ergonomic Mouse</text>
+  <text x="335" y="710" fill="#64748B" font-size="10">Shopping • Credit Card • 3 days ago</text>
+  <text x="815" y="705" fill="#F43F5E" font-size="13" font-weight="800" text-anchor="end">-₹4,350</text>
+
+  <!-- Right: Budget Health Card -->
+  <rect x="875" y="545" width="295" height="180" rx="14" fill="#0F1626" stroke="#1E293B" stroke-width="1" />
+  <text x="895" y="575" fill="#FFFFFF" font-size="14" font-weight="700">Budget Health Glance</text>
+
+  <!-- Progress 1: Healthcare (Exceeded) -->
+  <text x="895" y="605" fill="#E2E8F0" font-size="11" font-weight="600">Healthcare (121%)</text>
+  <text x="1145" y="605" fill="#F43F5E" font-size="11" font-weight="700" text-anchor="end">₹14.5K / ₹12K</text>
+  <rect x="895" y="612" width="250" height="7" rx="3.5" fill="#1E293B" />
+  <rect x="895" y="612" width="250" height="7" rx="3.5" fill="#F43F5E" />
+
+  <!-- Progress 2: Shopping (Warning) -->
+  <text x="895" y="640" fill="#E2E8F0" font-size="11" font-weight="600">Shopping (87%)</text>
+  <text x="1145" y="640" fill="#F59E0B" font-size="11" font-weight="700" text-anchor="end">₹8.65K / ₹10K</text>
+  <rect x="895" y="647" width="250" height="7" rx="3.5" fill="#1E293B" />
+  <rect x="895" y="647" width="217" height="7" rx="3.5" fill="#F59E0B" />
+
+  <!-- Progress 3: Food (Healthy) -->
+  <text x="895" y="675" fill="#E2E8F0" font-size="11" font-weight="600">Food (51%)</text>
+  <text x="1145" y="675" fill="#10B981" font-size="11" font-weight="700" text-anchor="end">₹6.14K / ₹12K</text>
+  <rect x="895" y="682" width="250" height="7" rx="3.5" fill="#1E293B" />
+  <rect x="895" y="682" width="127" height="7" rx="3.5" fill="#8B5CF6" />
+</svg>
+
