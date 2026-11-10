@@ -352,7 +352,10 @@ export const Settings = () => {
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={signOut}
+                  onClick={() => {
+                    signOut();
+                    resetSampleData();
+                  }}
                   className="text-slate-500 hover:text-rose-400"
                 >
                   <LogOut className="w-3.5 h-3.5 mr-1.5" />

@@ -3,10 +3,52 @@ import { getSupabase } from '../lib/supabase.js';
 const QUEUE_STORAGE_KEY = 'expenseflow_sync_queue';
 const LAST_SYNC_KEY = 'expenseflow_last_synced_at';
 const MIGRATION_PREFIX = 'expenseflow_migrated_';
+const CURRENT_USER_KEY = 'expenseflow_current_user_id';
 
 // ============================================================================
-// 1. Durably Persisted Offline Sync Queue
+// 1. Durably Persisted Offline Sync Queue & Session Isolation
 // ============================================================================
+
+export const clearSyncQueue = () => {
+  saveSyncQueue([]);
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('expenseflow:queue_changed'));
+  }
+};
+
+export const handleUserSessionChange = (newUserId) => {
+  try {
+    const previousUserId = typeof localStorage !== 'undefined' ? localStorage.getItem(CURRENT_USER_KEY) : null;
+
+    if (!newUserId) {
+      // User logged out
+      if (typeof localStorage !== 'undefined') {
+        localStorage.removeItem(CURRENT_USER_KEY);
+        localStorage.removeItem(LAST_SYNC_KEY);
+      }
+      clearSyncQueue();
+      return { switched: false, loggedOut: true };
+    }
+
+    if (previousUserId && previousUserId !== newUserId) {
+      // Different account logged in -> reset sync metadata & queue to prevent data cross-contamination
+      if (typeof localStorage !== 'undefined') {
+        localStorage.setItem(CURRENT_USER_KEY, newUserId);
+        localStorage.removeItem(LAST_SYNC_KEY);
+      }
+      clearSyncQueue();
+      return { switched: true, previousUserId };
+    }
+
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(CURRENT_USER_KEY, newUserId);
+    }
+    return { switched: false, initial: !previousUserId };
+  } catch (e) {
+    console.error('Session change handling error:', e);
+    return { switched: false };
+  }
+};
 
 export const getSyncQueue = () => {
   try {
@@ -387,7 +429,7 @@ export const mergeBudgets = (localBgts, remoteBgts, pendingQueue = []) => {
 // 6. Full Bidirectional Sync Orchestrator
 // ============================================================================
 
-export const executeFullSync = async (userId, currentLocalData, onDataMerged) => {
+export const executeFullSync = async (userId, currentLocalData, onDataMerged, options = {}) => {
   if (!userId) {
     return { success: false, reason: 'unauthenticated' };
   }
@@ -397,24 +439,32 @@ export const executeFullSync = async (userId, currentLocalData, onDataMerged) =>
     return { success: false, reason: 'supabase_not_configured' };
   }
 
-  try {
-    // Step 1: Push offline queue mutations to Supabase
-    const pushResult = await pushQueueToCloud(userId);
+  const { forceReplace = false } = options;
 
-    // Step 2: Pull remote records
-    const lastSynced = getLastSyncedAt();
+  try {
+    // Step 1: Push offline queue mutations to Supabase (skip if force replacing on account switch)
+    let pushResult = { pushedCount: 0 };
+    if (!forceReplace) {
+      pushResult = await pushQueueToCloud(userId);
+    }
+
+    // Step 2: Pull remote records (full pull if forceReplace)
+    const lastSynced = forceReplace ? null : getLastSyncedAt();
     const { remoteTransactions, remoteBudgets, remoteProfile } = await pullRemoteChanges(userId, lastSynced);
 
     // Step 3: Merge remote updates with current local state
     const remainingQueue = getSyncQueue();
+    const baseLocalTxs = forceReplace ? [] : (currentLocalData.transactions || []);
+    const baseLocalBgts = forceReplace ? [] : (currentLocalData.budgets || []);
+
     const mergedTransactions = mergeTransactions(
-      currentLocalData.transactions || [],
+      baseLocalTxs,
       remoteTransactions,
       remainingQueue
     );
 
     const mergedBudgets = mergeBudgets(
-      currentLocalData.budgets || [],
+      baseLocalBgts,
       remoteBudgets,
       remainingQueue
     );
@@ -422,11 +472,11 @@ export const executeFullSync = async (userId, currentLocalData, onDataMerged) =>
     let mergedProfile = currentLocalData.profile;
     if (remoteProfile) {
       mergedProfile = {
-        ...currentLocalData.profile,
-        name: remoteProfile.display_name || currentLocalData.profile.name,
-        occupation: remoteProfile.occupation || currentLocalData.profile.occupation,
-        currency: remoteProfile.currency || currentLocalData.profile.currency,
-        theme: remoteProfile.theme || currentLocalData.profile.theme
+        ...(forceReplace ? {} : currentLocalData.profile),
+        name: remoteProfile.display_name || currentLocalData.profile?.name || '',
+        occupation: remoteProfile.occupation || currentLocalData.profile?.occupation || '',
+        currency: remoteProfile.currency || currentLocalData.profile?.currency || 'INR',
+        theme: remoteProfile.theme || currentLocalData.profile?.theme || 'dark'
       };
     }
 

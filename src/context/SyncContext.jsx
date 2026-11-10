@@ -8,7 +8,8 @@ import {
   executeFullSync,
   checkMigrationNeeded,
   markMigrationDismissed,
-  migrateLocalDataToCloud
+  migrateLocalDataToCloud,
+  handleUserSessionChange
 } from '../services/syncService';
 import { getSupabase } from '../lib/supabase';
 
@@ -84,7 +85,7 @@ export const SyncProvider = ({ children }) => {
         if (financeRef.current.applyRemoteSync) {
           financeRef.current.applyRemoteSync(merged);
         }
-      });
+      }, { forceReplace: options.forceReplace });
 
       if (result.success) {
         setSyncStatus('synced');
@@ -108,12 +109,23 @@ export const SyncProvider = ({ children }) => {
     }
   }, [isConfigured, user, showToast, refreshQueueCount]);
 
-  // Check migration when user logs in
+  // Check migration or account switch when user logs in or changes
   useEffect(() => {
     if (!user) {
+      handleUserSessionChange(null);
       setSyncStatus('guest');
       setHasPendingMigration(false);
       setIsMigrationModalOpen(false);
+      return;
+    }
+
+    const sessionChange = handleUserSessionChange(user.id);
+
+    if (sessionChange.switched) {
+      // Account switch detected: force replace local state with this account's records
+      setHasPendingMigration(false);
+      setIsMigrationModalOpen(false);
+      syncNow({ silent: true, forceReplace: true });
       return;
     }
 
@@ -126,7 +138,7 @@ export const SyncProvider = ({ children }) => {
       // Direct auto sync
       syncNow({ silent: true });
     }
-  }, [user, transactions, budgets, syncNow]);
+  }, [user, syncNow]);
 
   // Debounced sync trigger when local queue changes
   useEffect(() => {

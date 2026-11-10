@@ -41,14 +41,19 @@ export const getSupabase = () => {
   // Re-instantiate if config changed or not created yet
   if (!clientInstance || creds.url !== currentConfig.url || creds.anonKey !== currentConfig.anonKey) {
     currentConfig = creds;
-    clientInstance = createClient(creds.url, creds.anonKey, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true,
-        storageKey: 'expenseflow_auth_session'
-      }
-    });
+    try {
+      clientInstance = createClient(creds.url, creds.anonKey, {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true,
+          storageKey: 'expenseflow_auth_session'
+        }
+      });
+    } catch (err) {
+      console.warn('[ExpenseFlow Supabase] Failed to initialize client with provided credentials:', err.message);
+      clientInstance = null;
+    }
   }
 
   return clientInstance;
