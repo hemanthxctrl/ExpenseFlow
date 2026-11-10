@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigate, useOutletContext } from 'react-router-dom';
 import {
   Wallet,
@@ -9,10 +9,13 @@ import {
   ArrowRight,
   Download,
   AlertTriangle,
-  ReceiptText
+  ReceiptText,
+  DownloadCloud,
+  X
 } from 'lucide-react';
 import { useFinance } from '../context/FinanceContext';
 import { useCurrency } from '../context/CurrencyContext';
+import { usePWA } from '../context/PWAContext';
 import { StatCard } from '../components/common/StatCard';
 import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
@@ -28,6 +31,8 @@ export const Dashboard = () => {
   const { openAddTransaction } = useOutletContext();
   const { transactions, metrics, budgetSummary, deleteTransaction } = useFinance();
   const { format } = useCurrency();
+  const { isInstallable, isInstalled, installApp } = usePWA();
+  const [dismissInstallBanner, setDismissInstallBanner] = useState(false);
 
   // 6-month trend data for CashflowChart
   const monthlyTrendData = useMemo(() => {
@@ -82,6 +87,43 @@ export const Dashboard = () => {
           </Button>
         </div>
       </div>
+
+      {/* PWA Install Banner */}
+      {isInstallable && !isInstalled && !dismissInstallBanner && (
+        <div className="p-4 rounded-2xl bg-gradient-to-r from-brand-900/60 via-brand-800/40 to-navy-800 border border-brand-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-slate-100 shadow-md">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-brand-500/20 text-brand-300 flex items-center justify-center shrink-0 border border-brand-500/30">
+              <DownloadCloud className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-sm font-bold text-white">
+                Install ExpenseFlow on your device
+              </p>
+              <p className="text-xs text-slate-300">
+                Add to your home screen for instant daily tracking, numeric keypad & offline support.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <Button
+              variant="primary"
+              size="sm"
+              icon={DownloadCloud}
+              onClick={installApp}
+              className="font-bold w-full sm:w-auto"
+            >
+              Install App
+            </Button>
+            <button
+              onClick={() => setDismissInstallBanner(true)}
+              className="p-1.5 text-slate-400 hover:text-white rounded-lg transition-colors"
+              aria-label="Dismiss banner"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* 4 Key Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

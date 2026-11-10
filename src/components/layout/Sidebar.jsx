@@ -41,6 +41,7 @@ export const Sidebar = ({ isOpen, onClose }) => {
           w-64 bg-navy-900 border-r border-navy-750/80
           flex flex-col justify-between
           transition-transform duration-300 ease-in-out
+          pt-[env(safe-area-inset-top,0px)] pb-[env(safe-area-inset-bottom,0px)]
           lg:translate-x-0
           ${isOpen ? 'translate-x-0' : '-translate-x-full'}
         `}

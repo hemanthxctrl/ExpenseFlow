@@ -102,7 +102,7 @@ export const TransactionList = ({
             <button
               onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
               disabled={currentPage === 1}
-              className="p-2 rounded-xl border border-slate-200 dark:border-navy-750 bg-white dark:bg-navy-850 text-slate-600 dark:text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-navy-800 transition-colors"
+              className="p-2 min-h-[38px] min-w-[38px] flex items-center justify-center rounded-xl border border-slate-200 dark:border-navy-750 bg-white dark:bg-navy-850 text-slate-600 dark:text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-navy-800 transition-colors active:scale-95"
               aria-label="Previous page"
             >
               <ChevronLeft className="w-4 h-4" />
@@ -115,7 +115,7 @@ export const TransactionList = ({
             <button
               onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}
               disabled={currentPage === totalPages}
-              className="p-2 rounded-xl border border-slate-200 dark:border-navy-750 bg-white dark:bg-navy-850 text-slate-600 dark:text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-navy-800 transition-colors"
+              className="p-2 min-h-[38px] min-w-[38px] flex items-center justify-center rounded-xl border border-slate-200 dark:border-navy-750 bg-white dark:bg-navy-850 text-slate-600 dark:text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-50 dark:hover:bg-navy-800 transition-colors active:scale-95"
               aria-label="Next page"
             >
               <ChevronRight className="w-4 h-4" />

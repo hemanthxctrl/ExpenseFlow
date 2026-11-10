@@ -3,9 +3,40 @@
 @tailwind utilities;
 
 @layer base {
-  body {
+  html, body {
     @apply antialiased font-sans transition-colors duration-200;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
   }
+
+  /* Prevent auto-zooming on focus in mobile browsers by ensuring min 16px font-size */
+  @media (max-width: 768px) {
+    input, select, textarea {
+      font-size: 16px !important;
+    }
+  }
+}
+
+/* Safe area support for iOS home indicator and Android navigation bars */
+.safe-area-bottom {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
+}
+
+.safe-area-top {
+  padding-top: max(0.5rem, env(safe-area-inset-top, 0px));
+}
+
+.safe-area-mb {
+  margin-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Hide scrollbar for clean horizontal tabs */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Custom scrollbar */
@@ -50,4 +81,3 @@
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(226, 232, 240, 0.8);
 }
-

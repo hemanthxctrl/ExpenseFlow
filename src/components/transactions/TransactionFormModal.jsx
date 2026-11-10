@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Modal } from '../common/Modal';
 import { Button } from '../common/Button';
 import { CATEGORIES, PAYMENT_METHODS } from '../../data/categories';
@@ -13,6 +13,7 @@ export const TransactionFormModal = ({
   defaultType = 'expense'
 }) => {
   const { symbol } = useCurrency();
+  const amountInputRef = useRef(null);
 
   const [title, setTitle] = useState('');
   const [amount, setAmount] = useState('');
@@ -43,6 +44,13 @@ export const TransactionFormModal = ({
       setDescription('');
     }
     setErrors({});
+
+    // Focus amount input for rapid entry on mobile
+    if (isOpen) {
+      setTimeout(() => {
+        amountInputRef.current?.focus();
+      }, 100);
+    }
   }, [initialData, defaultType, isOpen]);
 
   // When type changes, ensure valid category is selected
@@ -58,17 +66,17 @@ export const TransactionFormModal = ({
   const validate = () => {
     const newErrors = {};
 
-    if (!title.trim()) {
-      newErrors.title = 'Title is required';
-    } else if (title.trim().length < 2) {
-      newErrors.title = 'Title must be at least 2 characters';
-    }
-
     const numAmount = parseFloat(amount);
     if (!amount || isNaN(numAmount)) {
       newErrors.amount = 'Please enter a valid amount';
     } else if (numAmount <= 0) {
       newErrors.amount = 'Amount must be greater than zero';
+    }
+
+    if (!title.trim()) {
+      newErrors.title = 'Title is required';
+    } else if (title.trim().length < 2) {
+      newErrors.title = 'Title must be at least 2 characters';
     }
 
     if (!date) {
@@ -96,7 +104,7 @@ export const TransactionFormModal = ({
     onClose();
   };
 
-  // Filter categories relevant to type (or allow all)
+  // Filter categories relevant to type
   const availableCategories = CATEGORIES.filter(c => {
     if (type === 'income') {
       return c.type === 'income' || c.type === 'both';
@@ -110,7 +118,7 @@ export const TransactionFormModal = ({
       onClose={onClose}
       title={initialData ? 'Edit Transaction' : 'Record Transaction'}
       subtitle={initialData ? 'Update the details of your transaction' : 'Log a new income or expense into your ledger'}
-      maxWidth="max-w-xl"
+      maxWidth="max-w-lg"
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Type Toggle: Expense vs Income */}
@@ -122,57 +130,59 @@ export const TransactionFormModal = ({
             <button
               type="button"
               onClick={() => handleTypeChange('expense')}
-              className={`flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-semibold transition-all ${
+              className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-bold transition-all min-h-[44px] ${
                 type === 'expense'
-                  ? 'bg-rose-500 text-white shadow-md shadow-rose-500/25'
+                  ? 'bg-rose-500 text-white shadow-md shadow-rose-500/25 scale-[1.02]'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              <ArrowDownLeft className="w-4 h-4" />
+              <ArrowDownLeft className="w-4 h-4 shrink-0" />
               Expense
             </button>
             <button
               type="button"
               onClick={() => handleTypeChange('income')}
-              className={`flex items-center justify-center gap-2 py-2.5 px-4 rounded-lg text-sm font-semibold transition-all ${
+              className={`flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-bold transition-all min-h-[44px] ${
                 type === 'income'
-                  ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/25'
+                  ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/25 scale-[1.02]'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              <ArrowUpRight className="w-4 h-4" />
+              <ArrowUpRight className="w-4 h-4 shrink-0" />
               Income
             </button>
           </div>
         </div>
 
-        {/* Amount Input */}
-        <div>
-          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
+        {/* Amount Input - Prominent with Mobile Decimal Numeric Keypad */}
+        <div className="bg-slate-50/50 dark:bg-navy-900/40 p-3 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-navy-750">
+          <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
             Amount ({symbol}) *
           </label>
-          <div className="relative">
-            <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 font-bold text-lg pointer-events-none">
+          <div className="relative flex items-center">
+            <span className="text-xl sm:text-2xl font-bold text-slate-400 mr-2 select-none">
               {symbol}
             </span>
             <input
+              ref={amountInputRef}
               type="number"
               step="any"
               min="0.01"
+              inputMode="decimal"
               placeholder="0.00"
               value={amount}
               onChange={(e) => {
                 setAmount(e.target.value);
                 if (errors.amount) setErrors(prev => ({ ...prev, amount: null }));
               }}
-              className={`w-full pl-9 pr-4 py-3 bg-slate-50 dark:bg-navy-900 border ${
-                errors.amount ? 'border-rose-500' : 'border-slate-300 dark:border-navy-750'
-              } rounded-xl text-lg font-bold text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/50`}
+              className={`w-full bg-transparent border-0 border-b-2 ${
+                errors.amount ? 'border-rose-500' : 'border-slate-300 dark:border-navy-700 focus:border-brand-500'
+              } py-2 text-2xl sm:text-3xl font-black text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none transition-colors`}
             />
           </div>
           {errors.amount && (
-            <p className="text-xs text-rose-500 flex items-center gap-1 mt-1 font-medium">
-              <AlertCircle className="w-3.5 h-3.5" /> {errors.amount}
+            <p className="text-xs text-rose-500 flex items-center gap-1 mt-1.5 font-medium">
+              <AlertCircle className="w-3.5 h-3.5 shrink-0" /> {errors.amount}
             </p>
           )}
         </div>
@@ -190,19 +200,19 @@ export const TransactionFormModal = ({
               setTitle(e.target.value);
               if (errors.title) setErrors(prev => ({ ...prev, title: null }));
             }}
-            className={`w-full px-4 py-2.5 bg-slate-50 dark:bg-navy-900 border ${
+            className={`w-full px-4 py-3 bg-slate-50 dark:bg-navy-900 border ${
               errors.title ? 'border-rose-500' : 'border-slate-300 dark:border-navy-750'
-            } rounded-xl text-sm font-medium text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/50`}
+            } rounded-xl text-sm font-medium text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/50 min-h-[44px]`}
           />
           {errors.title && (
             <p className="text-xs text-rose-500 flex items-center gap-1 mt-1 font-medium">
-              <AlertCircle className="w-3.5 h-3.5" /> {errors.title}
+              <AlertCircle className="w-3.5 h-3.5 shrink-0" /> {errors.title}
             </p>
           )}
         </div>
 
-        {/* Category & Payment Method Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Category & Payment Method Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1.5">
               Category *
@@ -210,7 +220,7 @@ export const TransactionFormModal = ({
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-4 py-2.5 bg-slate-50 dark:bg-navy-900 border border-slate-300 dark:border-navy-750 rounded-xl text-sm font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/50"
+              className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-navy-900 border border-slate-300 dark:border-navy-750 rounded-xl text-sm font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/50 min-h-[44px]"
             >
               {availableCategories.map(cat => (
                 <option key={cat.id} value={cat.id} className="bg-white dark:bg-navy-900">
@@ -227,7 +237,7 @@ export const TransactionFormModal = ({
             <select
               value={paymentMethod}
               onChange={(e) => setPaymentMethod(e.target.value)}
-              className="w-full px-4 py-2.5 bg-slate-50 dark:bg-navy-900 border border-slate-300 dark:border-navy-750 rounded-xl text-sm font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/50"
+              className="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-navy-900 border border-slate-300 dark:border-navy-750 rounded-xl text-sm font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/50 min-h-[44px]"
             >
               {PAYMENT_METHODS.map(method => (
                 <option key={method} value={method} className="bg-white dark:bg-navy-900">
@@ -252,11 +262,11 @@ export const TransactionFormModal = ({
             }}
             className={`w-full px-4 py-2.5 bg-slate-50 dark:bg-navy-900 border ${
               errors.date ? 'border-rose-500' : 'border-slate-300 dark:border-navy-750'
-            } rounded-xl text-sm font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/50`}
+            } rounded-xl text-sm font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/50 min-h-[44px]`}
           />
           {errors.date && (
             <p className="text-xs text-rose-500 flex items-center gap-1 mt-1 font-medium">
-              <AlertCircle className="w-3.5 h-3.5" /> {errors.date}
+              <AlertCircle className="w-3.5 h-3.5 shrink-0" /> {errors.date}
             </p>
           )}
         </div>
@@ -271,7 +281,7 @@ export const TransactionFormModal = ({
             placeholder="Add context, vendor, receipt info or notes..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full px-4 py-2 bg-slate-50 dark:bg-navy-900 border border-slate-300 dark:border-navy-750 rounded-xl text-sm font-medium text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/50 resize-none"
+            className="w-full px-4 py-2.5 bg-slate-50 dark:bg-navy-900 border border-slate-300 dark:border-navy-750 rounded-xl text-sm font-medium text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/50 resize-none"
           />
         </div>
 
@@ -281,12 +291,14 @@ export const TransactionFormModal = ({
             type="button"
             variant="outline"
             onClick={onClose}
+            className="min-h-[44px] px-5"
           >
             Cancel
           </Button>
           <Button
             type="submit"
             variant={type === 'income' ? 'success' : 'primary'}
+            className="min-h-[44px] px-6 font-bold"
           >
             {initialData ? 'Save Changes' : type === 'income' ? 'Add Income' : 'Add Expense'}
           </Button>
@@ -295,4 +307,3 @@ export const TransactionFormModal = ({
     </Modal>
   );
 };
-

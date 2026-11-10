@@ -63,7 +63,7 @@ export const BudgetFormModal = ({
             value={category}
             disabled={!!initialData}
             onChange={(e) => setCategory(e.target.value)}
-            className="w-full px-4 py-2.5 bg-slate-50 dark:bg-navy-900 border border-slate-300 dark:border-navy-750 rounded-xl text-sm font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/50 disabled:opacity-60"
+            className="w-full px-4 py-2.5 bg-slate-50 dark:bg-navy-900 border border-slate-300 dark:border-navy-750 rounded-xl text-sm font-medium text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/50 disabled:opacity-60 min-h-[44px]"
           >
             {eligibleCategories.map(cat => (
               <option key={cat.id} value={cat.id} className="bg-white dark:bg-navy-900">
@@ -85,13 +85,14 @@ export const BudgetFormModal = ({
               type="number"
               step="any"
               min="1"
+              inputMode="decimal"
               placeholder="e.g. 10000"
               value={limit}
               onChange={(e) => {
                 setLimit(e.target.value);
                 if (error) setError('');
               }}
-              className="w-full pl-9 pr-4 py-2.5 bg-slate-50 dark:bg-navy-900 border border-slate-300 dark:border-navy-750 rounded-xl text-base font-bold text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/50"
+              className="w-full pl-9 pr-4 py-2.5 bg-slate-50 dark:bg-navy-900 border border-slate-300 dark:border-navy-750 rounded-xl text-base font-bold text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500/50 min-h-[44px]"
             />
           </div>
           {error && (

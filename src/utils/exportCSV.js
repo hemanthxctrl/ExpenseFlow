@@ -7,7 +7,7 @@ export const exportTransactionsToCSV = (transactions, filename = 'expenseflow_tr
     return;
   }
 
-  const headers = ['ID', 'Date', 'Title', 'Type', 'Category', 'Amount (INR)', 'Payment Method', 'Description'];
+  const headers = ['ID', 'Date', 'Title', 'Type', 'Category', 'Amount', 'Payment Method', 'Description'];
 
   const rows = transactions.map(t => {
     const escape = (val) => {

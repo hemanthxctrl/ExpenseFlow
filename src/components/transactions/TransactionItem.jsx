@@ -60,11 +60,11 @@ export const TransactionItem = ({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-1 opacity-95 sm:opacity-75 group-hover:opacity-100 transition-opacity">
+        <div className="flex items-center gap-1.5 opacity-95 sm:opacity-75 group-hover:opacity-100 transition-opacity">
           {onView && (
             <button
               onClick={() => onView(transaction)}
-              className="p-2 sm:p-1.5 text-slate-400 hover:text-brand-400 hover:bg-slate-100 dark:hover:bg-navy-750 rounded-lg transition-colors focus:outline-none"
+              className="p-2 text-slate-400 hover:text-brand-400 hover:bg-slate-100 dark:hover:bg-navy-750 rounded-lg transition-colors focus:outline-none min-h-[38px] min-w-[38px] flex items-center justify-center active:scale-95"
               title="View Details"
               aria-label="View transaction details"
             >
@@ -73,7 +73,7 @@ export const TransactionItem = ({
           )}
           <button
             onClick={() => onEdit(transaction)}
-            className="p-2 sm:p-1.5 text-slate-400 hover:text-brand-400 hover:bg-slate-100 dark:hover:bg-navy-750 rounded-lg transition-colors focus:outline-none"
+            className="p-2 text-slate-400 hover:text-brand-400 hover:bg-slate-100 dark:hover:bg-navy-750 rounded-lg transition-colors focus:outline-none min-h-[38px] min-w-[38px] flex items-center justify-center active:scale-95"
             title="Edit Transaction"
             aria-label="Edit transaction"
           >
@@ -81,7 +81,7 @@ export const TransactionItem = ({
           </button>
           <button
             onClick={() => onDelete(transaction)}
-            className="p-2 sm:p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-100 dark:hover:bg-navy-750 rounded-lg transition-colors focus:outline-none"
+            className="p-2 text-slate-400 hover:text-rose-400 hover:bg-slate-100 dark:hover:bg-navy-750 rounded-lg transition-colors focus:outline-none min-h-[38px] min-w-[38px] flex items-center justify-center active:scale-95"
             title="Delete Transaction"
             aria-label="Delete transaction"
           >

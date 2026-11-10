@@ -10,12 +10,15 @@ export const ThemeProvider = ({ children }) => {
 
   useEffect(() => {
     const root = document.documentElement;
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
     if (theme === 'dark') {
       root.classList.add('dark');
       root.classList.remove('light');
+      if (metaThemeColor) metaThemeColor.setAttribute('content', '#0B0F19');
     } else {
       root.classList.add('light');
       root.classList.remove('dark');
+      if (metaThemeColor) metaThemeColor.setAttribute('content', '#F8FAFC');
     }
     localStorage.setItem('expenseflow_theme', theme);
   }, [theme]);

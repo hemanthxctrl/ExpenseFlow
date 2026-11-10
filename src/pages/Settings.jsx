@@ -3,6 +3,7 @@ import { useFinance } from '../context/FinanceContext';
 import { useCurrency } from '../context/CurrencyContext';
 import { useTheme } from '../context/ThemeContext';
 import { useToast } from '../context/ToastContext';
+import { usePWA } from '../context/PWAContext';
 import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
 import { ConfirmDialog } from '../components/common/ConfirmDialog';
@@ -19,7 +20,12 @@ import {
   ShieldCheck,
   Check,
   Sparkles,
-  Info
+  Info,
+  Smartphone,
+  DownloadCloud,
+  CheckCircle2,
+  Wifi,
+  WifiOff
 } from 'lucide-react';
 
 export const Settings = () => {
@@ -27,6 +33,7 @@ export const Settings = () => {
   const { currencyCode, setCurrencyCode, currencies } = useCurrency();
   const { theme, setTheme, isDark } = useTheme();
   const { showToast } = useToast();
+  const { isOnline, isInstallable, isInstalled, installApp } = usePWA();
 
   // Profile form state
   const [name, setName] = useState(profile.name || '');
@@ -248,7 +255,92 @@ export const Settings = () => {
         </div>
       </Card>
 
-      {/* 3. Data Management: Export CSV, Backup, Reset, Clear */}
+      {/* 3. Progressive Web App (PWA) & Mobile Installation */}
+      <Card>
+        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-navy-750">
+          <div className="p-2.5 rounded-xl bg-brand-500/15 text-brand-400 border border-brand-500/30">
+            <Smartphone className="w-5 h-5" />
+          </div>
+          <div>
+            <h3 className="text-base font-bold text-slate-900 dark:text-white">
+              Progressive Web App (PWA)
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Install ExpenseFlow on your Android phone or desktop for full offline operation
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 dark:bg-navy-900 border border-slate-200 dark:border-navy-750">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-sm font-bold text-slate-900 dark:text-white">
+                  Application Mode
+                </span>
+                {isInstalled ? (
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-400 bg-emerald-500/15 px-2 py-0.5 rounded-full border border-emerald-500/30">
+                    <CheckCircle2 className="w-3 h-3" /> Standalone PWA
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-brand-400 bg-brand-500/15 px-2 py-0.5 rounded-full border border-brand-500/30">
+                    Browser Web App
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                {isInstalled
+                  ? 'Running in standalone mobile application mode. Works seamlessly offline.'
+                  : 'Install ExpenseFlow on your mobile home screen to record expenses with one tap.'}
+              </p>
+            </div>
+
+            {isInstallable && (
+              <Button
+                variant="primary"
+                size="sm"
+                icon={DownloadCloud}
+                onClick={installApp}
+                className="shrink-0 font-bold"
+              >
+                Install ExpenseFlow
+              </Button>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-navy-900/60 border border-slate-200 dark:border-navy-750 flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 shrink-0">
+                <Wifi className="w-4 h-4" />
+              </div>
+              <div className="min-w-0">
+                <p className="font-bold text-slate-800 dark:text-slate-200">
+                  {isOnline ? 'Online Ready' : 'Operating Offline'}
+                </p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                  LocalStorage persists data even without internet
+                </p>
+              </div>
+            </div>
+
+            <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-navy-900/60 border border-slate-200 dark:border-navy-750 flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-brand-500/10 text-brand-400 shrink-0">
+                <ShieldCheck className="w-4 h-4" />
+              </div>
+              <div className="min-w-0">
+                <p className="font-bold text-slate-800 dark:text-slate-200">
+                  Private & Device-Only
+                </p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                  No remote backend — data stays 100% on this device
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      {/* 4. Data Management: Export CSV, Backup, Reset, Clear */}
       <Card>
         <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-navy-750">
           <div className="p-2.5 rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">

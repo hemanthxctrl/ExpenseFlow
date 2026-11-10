@@ -288,17 +288,25 @@ The application uses a pure calculation engine in [`src/utils/calculations.js`](
 
 ---
 
-## 9. Responsive & Mobile Compatibility
+## 9. Mobile-First Progressive Web App (PWA) & Responsive Compatibility
 
-ExpenseFlow is engineered as **one unified application** that dynamically adjusts layout across screen sizes:
+ExpenseFlow is engineered as **a mobile-first installable Progressive Web App** that dynamically adjusts layout across all devices:
 
-- **Desktop (≥ 1024px)**: Fixed left navigation sidebar (256px), multi-column dashboard grid, full transaction data table.
+- **Mobile Phones (< 768px)**:
+  - **Installable PWA**: Installable via Chrome and Brave on Android with `standalone` display mode, eliminating browser chrome.
+  - **Bottom Navigation Bar**: 5 primary modules (Dashboard, Transactions, Budgets, Analytics, Settings) with active indicators and safe-area inset protection.
+  - **Rapid Expense Entry**: Floating Action Button (FAB) on mobile, prominent amount input with mobile decimal numeric keypad (`inputMode="decimal"`), and instant category selection.
+  - **100% Offline Capability**: Application shell and assets are cached via Service Worker (`public/sw.js`); all transaction CRUD operations persist seamlessly into `localStorage` even without internet connectivity.
+  - **Offline Status Bar**: Visual indicator informs the user when operating offline or when network connectivity is restored.
+  - **Safe Area Insets**: Full support for Android gesture bars, bottom home indicators, and top notch cutouts via `viewport-fit=cover` and CSS safe areas.
+  - **Touch Friendly**: Generous touch targets (min 44px) and zero horizontal scrolling (`overflow-x: hidden`).
 - **Tablet (768px – 1023px)**: Two-column metric cards, responsive charts with automatic container reflow.
-- **Mobile (< 768px)**:
-  - Header displays a slide-over drawer toggle.
-  - Sticky bottom navigation bar for single-thumb access to all 5 sections.
-  - Transactions format into touch-friendly cards with tap targets (`min-h-[32px]`).
-  - Charts utilize responsive containers with `min-w-0` to eliminate horizontal scroll.
+- **Desktop (≥ 1024px)**: Fixed left navigation sidebar (256px), multi-column dashboard grid, full transaction data table.
+
+### Installing ExpenseFlow on Android (Chrome / Brave)
+1. Open your deployed HTTPS URL (e.g. on Vercel) in **Google Chrome** or **Brave Browser** on Android.
+2. In **Settings**, tap the **Install ExpenseFlow** button, or tap the browser menu (**⋮**) -> **Add to Home screen** / **Install app**.
+3. Tap **Install**. ExpenseFlow will be installed directly to your app drawer and home screen.
 
 ---
 

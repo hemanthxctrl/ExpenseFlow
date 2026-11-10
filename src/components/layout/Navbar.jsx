@@ -21,7 +21,7 @@ export const Navbar = ({ onOpenSidebar, onOpenAddModal }) => {
   const currentTitle = PAGE_TITLES[location.pathname] || 'ExpenseFlow';
 
   return (
-    <header className="sticky top-0 z-30 h-16 sm:h-20 bg-white/85 dark:bg-navy-900/85 backdrop-blur-md border-b border-slate-200 dark:border-navy-750/80 transition-colors duration-200 px-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-30 min-h-16 sm:min-h-20 pt-[env(safe-area-inset-top,0px)] bg-white/85 dark:bg-navy-900/85 backdrop-blur-md border-b border-slate-200 dark:border-navy-750/80 transition-colors duration-200 px-3.5 sm:px-6 lg:px-8">
       <div className="h-full flex items-center justify-between gap-3 sm:gap-4">
         {/* Left: Mobile menu button + Page title */}
         <div className="flex items-center gap-2 sm:gap-3 min-w-0">

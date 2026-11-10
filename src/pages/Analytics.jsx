@@ -78,7 +78,7 @@ export const Analytics = () => {
         </div>
 
         {/* Timeframe Selector Pills */}
-        <div className="flex items-center gap-1 p-1 bg-white dark:bg-navy-850 rounded-xl border border-slate-200 dark:border-navy-750 overflow-x-auto max-w-full">
+        <div className="flex items-center gap-1 p-1 bg-white dark:bg-navy-850 rounded-xl border border-slate-200 dark:border-navy-750 overflow-x-auto max-w-full no-scrollbar">
           {[
             { id: 'this-month', label: 'This Month' },
             { id: 'last-3-months', label: 'Last 3M' },
