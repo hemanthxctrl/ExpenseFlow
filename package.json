@@ -10,6 +10,7 @@
     "generate-icons": "node scripts/generate-icons.js"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.119.0",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",

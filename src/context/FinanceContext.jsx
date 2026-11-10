@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useMemo } from '
 import { INITIAL_TRANSACTIONS, INITIAL_BUDGETS, INITIAL_PROFILE } from '../data/sampleData';
 import { calculateDashboardMetrics, calculateBudgetsStatus } from '../utils/calculations';
 import { useToast } from './ToastContext';
+import { enqueueMutation } from '../services/syncService';
 
 const FinanceContext = createContext();
 
@@ -102,27 +103,33 @@ export const FinanceProvider = ({ children }) => {
   // Add Transaction
   const addTransaction = (newTxData) => {
     const id = 'tx-' + Date.now() + '-' + Math.random().toString(36).substring(2, 6);
+    const now = new Date().toISOString();
     const newTx = {
       id,
       title: newTxData.title.trim(),
       amount: Math.abs(Number(newTxData.amount)),
       type: newTxData.type || 'expense',
       category: newTxData.category || 'Other',
-      date: newTxData.date || new Date().toISOString().split('T')[0],
+      date: newTxData.date || now.split('T')[0],
       paymentMethod: newTxData.paymentMethod || 'UPI',
-      description: newTxData.description ? newTxData.description.trim() : ''
+      description: newTxData.description ? newTxData.description.trim() : '',
+      created_at: now,
+      updated_at: now
     };
 
     setTransactions(prev => [newTx, ...prev]);
+    enqueueMutation('transaction', 'upsert', newTx);
     showToast(`Added ${newTx.type === 'income' ? 'income' : 'expense'}: "${newTx.title}"`, 'success');
     return newTx;
   };
 
   // Edit Transaction
   const updateTransaction = (id, updatedData) => {
+    const now = new Date().toISOString();
+    let updatedRecord = null;
     setTransactions(prev => prev.map(t => {
       if (t.id === id) {
-        return {
+        updatedRecord = {
           ...t,
           title: updatedData.title ? updatedData.title.trim() : t.title,
           amount: updatedData.amount !== undefined ? Math.abs(Number(updatedData.amount)) : t.amount,
@@ -130,11 +137,16 @@ export const FinanceProvider = ({ children }) => {
           category: updatedData.category || t.category,
           date: updatedData.date || t.date,
           paymentMethod: updatedData.paymentMethod || t.paymentMethod,
-          description: updatedData.description !== undefined ? updatedData.description.trim() : t.description
+          description: updatedData.description !== undefined ? updatedData.description.trim() : t.description,
+          updated_at: now
         };
+        return updatedRecord;
       }
       return t;
     }));
+    if (updatedRecord) {
+      enqueueMutation('transaction', 'upsert', updatedRecord);
+    }
     showToast('Transaction updated successfully', 'success');
   };
 
@@ -142,34 +154,56 @@ export const FinanceProvider = ({ children }) => {
   const deleteTransaction = (id) => {
     const target = transactions.find(t => t.id === id);
     setTransactions(prev => prev.filter(t => t.id !== id));
+    enqueueMutation('transaction', 'delete', { id });
     showToast(`Deleted "${target?.title || 'transaction'}"`, 'info');
   };
 
   // Set or update a category budget
   const setBudget = (category, limit) => {
     const numLimit = Math.abs(Number(limit));
+    const now = new Date().toISOString();
+    const budgetPayload = { category, limit: numLimit, updated_at: now };
+
     setBudgets(prev => {
       const index = prev.findIndex(b => b.category.toLowerCase() === category.toLowerCase());
       if (index >= 0) {
         const updated = [...prev];
-        updated[index] = { ...updated[index], limit: numLimit };
+        updated[index] = { ...updated[index], limit: numLimit, updated_at: now };
         return updated;
       }
-      return [...prev, { category, limit: numLimit }];
+      return [...prev, budgetPayload];
     });
+    enqueueMutation('budget', 'upsert', budgetPayload);
     showToast(`Budget for ${category} set to limit`, 'success');
   };
 
   // Delete a category budget
   const deleteBudget = (category) => {
     setBudgets(prev => prev.filter(b => b.category.toLowerCase() !== category.toLowerCase()));
+    enqueueMutation('budget', 'delete', { category });
     showToast(`Budget for ${category} removed`, 'info');
   };
 
   // Update Profile
   const updateProfile = (newProfile) => {
-    setProfile(prev => ({ ...prev, ...newProfile }));
+    const now = new Date().toISOString();
+    const updated = { ...profile, ...newProfile, updated_at: now };
+    setProfile(updated);
+    enqueueMutation('profile', 'upsert', updated);
     showToast('Profile updated successfully', 'success');
+  };
+
+  // Merge remote sync updates safely without trigger loops
+  const applyRemoteSync = ({ transactions: newTxs, budgets: newBgts, profile: newProf }) => {
+    if (Array.isArray(newTxs)) {
+      setTransactions(newTxs);
+    }
+    if (Array.isArray(newBgts)) {
+      setBudgets(newBgts);
+    }
+    if (newProf) {
+      setProfile(prev => ({ ...prev, ...newProf }));
+    }
   };
 
   // Reset to Sample Data
@@ -226,6 +260,7 @@ export const FinanceProvider = ({ children }) => {
         setBudget,
         deleteBudget,
         updateProfile,
+        applyRemoteSync,
         resetSampleData,
         clearAllData,
         importData

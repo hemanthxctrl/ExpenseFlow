@@ -4,6 +4,10 @@ import { useCurrency } from '../context/CurrencyContext';
 import { useTheme } from '../context/ThemeContext';
 import { useToast } from '../context/ToastContext';
 import { usePWA } from '../context/PWAContext';
+import { useAuth } from '../context/AuthContext';
+import { useSync } from '../context/SyncContext';
+import { SyncStatusBadge } from '../components/sync/SyncStatusBadge';
+import { getSupabaseConfig, saveCustomSupabaseConfig } from '../lib/supabase';
 import { Card } from '../components/common/Card';
 import { Button } from '../components/common/Button';
 import { ConfirmDialog } from '../components/common/ConfirmDialog';
@@ -25,7 +29,16 @@ import {
   DownloadCloud,
   CheckCircle2,
   Wifi,
-  WifiOff
+  WifiOff,
+  Cloud,
+  CloudUpload,
+  RefreshCw,
+  LogOut,
+  Key,
+  Settings2,
+  ChevronDown,
+  ChevronUp,
+  ExternalLink
 } from 'lucide-react';
 
 export const Settings = () => {
@@ -34,6 +47,14 @@ export const Settings = () => {
   const { theme, setTheme, isDark } = useTheme();
   const { showToast } = useToast();
   const { isOnline, isInstallable, isInstalled, installApp } = usePWA();
+  const { user, openAuthModal, signOut, isConfigured } = useAuth();
+  const { syncStatus, lastSyncedAt, pendingCount, syncNow } = useSync();
+
+  // Supabase Custom Config state
+  const [showConfigSettings, setShowConfigSettings] = useState(false);
+  const [supabaseUrlInput, setSupabaseUrlInput] = useState(() => getSupabaseConfig().url || '');
+  const [supabaseKeyInput, setSupabaseKeyInput] = useState(() => getSupabaseConfig().anonKey || '');
+  const [isSavingConfig, setIsSavingConfig] = useState(false);
 
   // Profile form state
   const [name, setName] = useState(profile.name || '');
@@ -79,6 +100,31 @@ export const Settings = () => {
     };
     reader.readAsText(file);
     e.target.value = ''; // reset file input
+  };
+
+  const handleSaveCustomConfig = (e) => {
+    e.preventDefault();
+    setIsSavingConfig(true);
+    try {
+      saveCustomSupabaseConfig(supabaseUrlInput, supabaseKeyInput);
+      showToast('Supabase configuration saved! Reloading client...', 'success');
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
+    } catch (err) {
+      showToast('Failed to save config: ' + err.message, 'error');
+      setIsSavingConfig(false);
+    }
+  };
+
+  const handleResetCustomConfig = () => {
+    saveCustomSupabaseConfig('', '');
+    setSupabaseUrlInput('');
+    setSupabaseKeyInput('');
+    showToast('Reset to default environment configuration', 'info');
+    setTimeout(() => {
+      window.location.reload();
+    }, 500);
   };
 
   return (
@@ -255,7 +301,207 @@ export const Settings = () => {
         </div>
       </Card>
 
-      {/* 3. Progressive Web App (PWA) & Mobile Installation */}
+      {/* 3. Cloud Synchronization & Supabase Multi-Device Account */}
+      <Card>
+        <div className="flex items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-navy-750">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-brand-500/15 text-brand-400 border border-brand-500/30">
+              <Cloud className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                Cloud Sync & Account
+                <SyncStatusBadge showLabel={false} />
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Synchronize transactions and budgets across your Android phone and desktop
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Account Details or Guest State */}
+        {user ? (
+          <div className="space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 dark:bg-navy-900 border border-slate-200 dark:border-navy-750">
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 rounded-xl bg-brand-500/20 text-brand-400 font-bold flex items-center justify-center text-lg border border-brand-500/30 shrink-0">
+                  {user.email ? user.email.charAt(0).toUpperCase() : 'U'}
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-bold text-slate-900 dark:text-white truncate">
+                    {user.user_metadata?.display_name || user.email?.split('@')[0]}
+                  </p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                    {user.email}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => syncNow({ silent: false })}
+                  disabled={syncStatus === 'syncing'}
+                  className="font-bold"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${syncStatus === 'syncing' ? 'animate-spin' : ''}`} />
+                  {syncStatus === 'syncing' ? 'Syncing...' : 'Sync Now'}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={signOut}
+                  className="text-slate-500 hover:text-rose-400"
+                >
+                  <LogOut className="w-3.5 h-3.5 mr-1.5" />
+                  Sign Out
+                </Button>
+              </div>
+            </div>
+
+            {/* Sync Status Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+              <div className="p-3 rounded-xl bg-slate-50 dark:bg-navy-900/60 border border-slate-200 dark:border-navy-750">
+                <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-bold">Cloud Status</span>
+                <span className="font-bold text-slate-800 dark:text-slate-200 capitalize mt-0.5 inline-block">
+                  {syncStatus === 'synced' ? 'All Synced' : syncStatus}
+                </span>
+              </div>
+              <div className="p-3 rounded-xl bg-slate-50 dark:bg-navy-900/60 border border-slate-200 dark:border-navy-750">
+                <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-bold">Pending Queue</span>
+                <span className="font-bold text-slate-800 dark:text-slate-200 mt-0.5 inline-block">
+                  {pendingCount === 0 ? '0 changes pending' : `${pendingCount} items waiting upload`}
+                </span>
+              </div>
+              <div className="p-3 rounded-xl bg-slate-50 dark:bg-navy-900/60 border border-slate-200 dark:border-navy-750">
+                <span className="text-slate-500 dark:text-slate-400 block text-[10px] uppercase font-bold">Last Synced</span>
+                <span className="font-bold text-slate-800 dark:text-slate-200 mt-0.5 inline-block">
+                  {lastSyncedAt ? new Date(lastSyncedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : 'Never'}
+                </span>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div className="p-4 rounded-xl bg-brand-500/10 border border-brand-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-start gap-3">
+                <div className="p-2 rounded-lg bg-brand-500/20 text-brand-400 shrink-0 mt-0.5">
+                  <CloudUpload className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-white">
+                    Guest Mode (Local Storage Only)
+                  </h4>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 mt-0.5 leading-relaxed">
+                    You are currently using ExpenseFlow offline on this device. Sign in to seamlessly sync your records between your mobile phone and laptop.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => openAuthModal('login')}
+                  className="w-full sm:w-auto font-bold"
+                >
+                  Sign In / Create Account
+                </Button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs text-slate-400">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <span>Multi-device realtime sync</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <span>Offline queue with replay</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <span>End-to-end user isolation (RLS)</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Collapsible Custom Supabase Credentials */}
+        <div className="mt-5 pt-4 border-t border-slate-100 dark:border-navy-750">
+          <button
+            type="button"
+            onClick={() => setShowConfigSettings(prev => !prev)}
+            className="w-full flex items-center justify-between text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors py-1"
+          >
+            <span className="flex items-center gap-2">
+              <Settings2 className="w-3.5 h-3.5" />
+              Custom Supabase Project Connection {isConfigured ? '(Configured)' : '(Not Configured)'}
+            </span>
+            {showConfigSettings ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+          </button>
+
+          {showConfigSettings && (
+            <form onSubmit={handleSaveCustomConfig} className="mt-4 space-y-3 p-4 rounded-xl bg-slate-50 dark:bg-navy-900 border border-slate-200 dark:border-navy-750 text-xs">
+              <p className="text-slate-500 dark:text-slate-400 leading-relaxed">
+                Enter your Supabase project credentials below. If you configure them here, they will be stored securely in your browser and override the default project environment variables.
+              </p>
+
+              <div>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Supabase Project URL
+                </label>
+                <input
+                  type="url"
+                  value={supabaseUrlInput}
+                  onChange={(e) => setSupabaseUrlInput(e.target.value)}
+                  placeholder="https://xyzcompany.supabase.co"
+                  className="w-full px-3 py-2 bg-white dark:bg-navy-800 border border-slate-300 dark:border-navy-700 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/50"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Supabase Anon Public API Key
+                </label>
+                <input
+                  type="password"
+                  value={supabaseKeyInput}
+                  onChange={(e) => setSupabaseKeyInput(e.target.value)}
+                  placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  className="w-full px-3 py-2 bg-white dark:bg-navy-800 border border-slate-300 dark:border-navy-700 rounded-lg text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500/50"
+                />
+              </div>
+
+              <div className="flex items-center justify-between pt-2">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleResetCustomConfig}
+                  className="text-slate-500 hover:text-slate-300"
+                >
+                  Reset to Defaults
+                </Button>
+
+                <Button
+                  type="submit"
+                  variant="primary"
+                  size="sm"
+                  disabled={isSavingConfig}
+                  className="font-bold"
+                >
+                  Save Supabase Settings
+                </Button>
+              </div>
+            </form>
+          )}
+        </div>
+      </Card>
+
+      {/* 4. Progressive Web App (PWA) & Mobile Installation */}
       <Card>
         <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-navy-750">
           <div className="p-2.5 rounded-xl bg-brand-500/15 text-brand-400 border border-brand-500/30">

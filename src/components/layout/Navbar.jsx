@@ -4,6 +4,7 @@ import { Menu, Plus, Sun, Moon } from 'lucide-react';
 import { Button } from '../common/Button';
 import { useTheme } from '../../context/ThemeContext';
 import { useCurrency } from '../../context/CurrencyContext';
+import { SyncStatusBadge } from '../sync/SyncStatusBadge';
 
 const PAGE_TITLES = {
   '/': 'Dashboard Overview',
@@ -43,8 +44,11 @@ export const Navbar = ({ onOpenSidebar, onOpenAddModal }) => {
           </div>
         </div>
 
-        {/* Right: Actions (Currency selector, Theme toggle, Add Transaction) */}
+        {/* Right: Actions (Sync Status, Currency selector, Theme toggle, Add Transaction) */}
         <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+          {/* Cloud Sync Status Badge */}
+          <SyncStatusBadge />
+
           {/* Currency Selector */}
           <div className="relative">
             <select
